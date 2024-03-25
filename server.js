@@ -1,11 +1,13 @@
 require ('dotenv').config();
-const express  = require('express');
 const mongoose = require('mongoose');
-const app = express();
+const app = require('express');
 const port  = process.env.PORT || 8000;
+const UserRouter = require('./api/User');
+const bodyParser = require('body-parser');
 
 const uri = process.env.MONGODB_URI;
-console.log(uri);
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
 
 async function connect() {
     try {
