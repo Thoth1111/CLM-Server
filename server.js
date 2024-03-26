@@ -1,6 +1,7 @@
 require ('dotenv').config();
 const mongoose = require('mongoose');
-const app = require('express');
+const express = require('express');
+const app = express();
 const port  = process.env.PORT || 8000;
 const UserRouter = require('./api/User');
 const bodyParser = require('body-parser');
@@ -8,6 +9,7 @@ const bodyParser = require('body-parser');
 const uri = process.env.MONGODB_URI;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
+app.use('/user', UserRouter);
 
 async function connect() {
     try {
