@@ -7,7 +7,7 @@ const port  = process.env.PORT || 8000;
 const UserRouter = require('./api/User');
 const bodyParser = require('body-parser');
 
-const uri = process.env.MONGODB_URI;
+const uri = process.env.MONGODB_CONNECTION_STRING;
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
