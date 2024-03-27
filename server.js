@@ -2,11 +2,13 @@ require ('dotenv').config();
 const mongoose = require('mongoose');
 const express = require('express');
 const app = express();
+const cors = require('cors');
 const port  = process.env.PORT || 8000;
 const UserRouter = require('./api/User');
 const bodyParser = require('body-parser');
 
 const uri = process.env.MONGODB_URI;
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use('/user', UserRouter);
