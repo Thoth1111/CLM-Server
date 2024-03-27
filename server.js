@@ -19,9 +19,6 @@ async function connect() {
     catch (e) {
         console.error(e);
     }
-    finally {
-        await mongoose.connection.close();
-    }
 }
 
 connect().catch(console.error);
