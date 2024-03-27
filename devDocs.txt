@@ -1,3 +1,4 @@
 Resources used for setting up node.js and mongoDB:
     ~ https://www.mongodb.com/developer/languages/javascript/node-crud-tutorial/
     ~ https://www.youtube.com/watch?v=5yU-P0grJjk
+    ~ https://www.youtube.com/watch?v=yY2gXnRGVUw
