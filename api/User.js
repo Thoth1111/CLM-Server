@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const generateAccessToken = require('../middleware/auth');
+const generateRefreshToken = require('../middleware/auth');
 
 // Load User model
 const User = require('../models/User');
@@ -39,8 +41,11 @@ router.post('/register', async (req, res) => {
                 phone_number,
                 password: hashedPassword
             })
-            const savedUser = await newUser.save()               
-            res.status(201).json({ message: 'User created successfully', data: savedUser.email });
+            const savedUser = await newUser.save()
+            const accessToken = generateAccessToken({ national_id_number: savedUser.national_id_number });
+            const refreshToken = generateRefreshToken({ national_id_number: savedUser.national_id_number });
+            savedUser.refresh_tokens.push(refreshToken);
+    res.status(201).json({ message: 'User created successfully', data: savedUser, accessToken: accessToken, refreshToken: refreshToken});
                
         } catch (e) {
             console.error(e);
@@ -65,7 +70,10 @@ router.post('/login', async (req, res) => {
             } else {
                 const match = await bcrypt.compare(password, user.password);
                 if (match) {
-                    return res.status(200).json({ message: 'User logged in successfully' });
+                    const accessToken = generateAccessToken({ national_id_number: user.national_id_number });
+                    const refreshToken = generateRefreshToken({ national_id_number: user.national_id_number });
+                    user.refresh_tokens.push(refreshToken);
+                    return res.status(200).json({ message: 'Successful login', data: user, accessToken: accessToken, refreshToken: refreshToken});
                 } else {
                     return res.status(401).json({ message: 'Invalid credentials' });
                 }
@@ -75,6 +83,21 @@ router.post('/login', async (req, res) => {
             console.error(e);
             res.status(500).json({ message: 'Internal server error while logging in user' });
         }
+    }
+})
+
+// Logout user
+router.delete('/logout', async (req, res) => {
+    const { national_id_number, refreshToken } = req.body;
+    if (!national_id_number) return res.status(400).json({ message: 'Unable to Logout due to missing Parameters' });
+    try {
+        const user = await User.findOne({ national_id_number });
+        if (!user) return res.status(404).json({ message: 'User not found' });
+        user.refresh_tokens = user.refresh_tokens.filter(token => token !== refreshToken);
+        res.status(204).json({ message: 'User logged out successfully' });
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ message: 'Internal server error while logging out user' });
     }
 })
 
