@@ -89,14 +89,18 @@ router.post('/login', async (req, res) => {
 
 // Logout user
 router.delete('/logout', async (req, res) => {
-    const { national_id_number, refreshToken } = req.body;
-    if (!national_id_number) return res.status(400).json({ message: 'Unable to Logout due to missing Parameters' });
+    const { refreshToken } = req.body;
+    if (!refreshToken) return res.status(400).json({ message: 'Unable to Logout due to missing Parameters' });
     try {
-        const user = await User.findOne({ national_id_number });
-        if (!user) return res.status(404).json({ message: 'User not found' });
-        user.refresh_tokens = user.refresh_tokens.filter(token => token !== refreshToken);
-        await user.save();
-        res.status(204).json({ message: 'User logged out successfully' });
+        jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
+            if (err) return res.status(403).json({ message: 'Invalid token' });
+            national_id_number = decoded.national_id_number;
+            const user = User.findOne({ national_id_number });        
+            if (!user) return res.status(404).json({ message: 'User not found' });
+            user.refresh_tokens = user.refresh_tokens.filter(token => token !== refreshToken);
+            user.save();
+            res.status(204).json({ message: 'User logged out successfully' });
+        })
     } catch (e) {
         console.error(e);
         res.status(500).json({ message: 'Internal server error while logging out user' });
