@@ -42,8 +42,8 @@ router.post('/register', async (req, res) => {
                 password: hashedPassword
             })
             const savedUser = await newUser.save()
-            const accessToken = jwt.sign(savedUser.national_id_number, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '10m'});
-            const refreshToken = jwt.sign(savedUser.national_id_number, process.env.REFRESH_TOKEN_SECRET, {expiresIn: '1d'});
+            const accessToken = jwt.sign({national_id_number: savedUser.national_id_number}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '10m'});
+            const refreshToken = jwt.sign({national_id_number: savedUser.national_id_number}, process.env.REFRESH_TOKEN_SECRET, {expiresIn: '1d'});
             savedUser.refresh_tokens.push(refreshToken);
     res.status(201).json({ message: 'User created successfully', data: savedUser, accessToken: accessToken, refreshToken: refreshToken});
                
@@ -70,8 +70,8 @@ router.post('/login', async (req, res) => {
             } else {
                 const match = await bcrypt.compare(password, user.password);
                 if (match) {
-                    const accessToken = jwt.sign(user.national_id_number, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '10m'});
-                    const refreshToken = jwt.sign(user.national_id_number, process.env.REFRESH_TOKEN_SECRET, {expiresIn: '1d'});
+                    const accessToken = jwt.sign({national_id_number: user.national_id_number}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '10m'});
+                    const refreshToken = jwt.sign({national_id_number: user.national_id_number}, process.env.REFRESH_TOKEN_SECRET, {expiresIn: '1d'});
                     user.refresh_tokens.push(refreshToken);
                     return res.status(200).json({ message: 'Successful login', data: user, accessToken: accessToken, refreshToken: refreshToken});
                 } else {
