@@ -11,7 +11,7 @@ const verifyJWT = (req, res, next) => {
     if (!refreshToken) return res.status(401).send({message: 'Unauthorized Action'});
     jwt.verify(token, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
         if (err) return res.status(403).send({message: 'Invalid token'});
-        req.user = decoded.national_id_number;
+        req.national_id_number = decoded.national_id_number;
         next();
     })
 }
