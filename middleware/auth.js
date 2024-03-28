@@ -1,10 +1,6 @@
 const jwt = require('jsonwebtoken');
 require ('dotenv').config();
 
-const generateAccessToken = (nationalId) => {
-    return jwt.sign(nationalId, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '10m'});
-}
-
 const generateRefreshToken = (nationalId) => {
     return jwt.sign(nationalId, process.env.REFRESH_TOKEN_SECRET, {expiresIn: '1d'});
 }
@@ -20,4 +16,4 @@ const verifyJWT = (req, res, next) => {
     })
 }
 
-module.exports = { generateAccessToken, generateRefreshToken, verifyJWT };
+module.exports = { generateRefreshToken, verifyJWT };
