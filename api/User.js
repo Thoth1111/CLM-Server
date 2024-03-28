@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
-require ('dotenv').config();
+require('dotenv').config();
 
 // Load User model
 const User = require('../models/User');
@@ -11,9 +11,9 @@ const bcrypt = require('bcrypt');
 
 // Register a new user
 router.post('/register', async (req, res) => {
-    let { email, national_id_number, phone_number, password  } = req.body;
+    let { email, national_id_number, phone_number, password } = req.body;
     email = email.trim();
-    national_id_number = national_id_number.trim();    
+    national_id_number = national_id_number.trim();
     phone_number = phone_number.trim();
     password = password.trim();
 
@@ -39,14 +39,15 @@ router.post('/register', async (req, res) => {
                 email,
                 national_id_number,
                 phone_number,
-                password: hashedPassword
+                password: hashedPassword,
+                refresh_tokens: []
             })
+            const accessToken = jwt.sign({ national_id_number }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '10m' });
+            const refreshToken = jwt.sign({ national_id_number }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '1d' });
+            newUser.refresh_tokens.push(refreshToken);
             const savedUser = await newUser.save()
-            const accessToken = jwt.sign({national_id_number}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '10m'});
-            const refreshToken = jwt.sign({national_id_number}, process.env.REFRESH_TOKEN_SECRET, {expiresIn: '1d'});
-            savedUser.refresh_tokens.push(refreshToken);
-    res.status(201).json({ message: 'User created successfully', data: savedUser, accessToken: accessToken, refreshToken: refreshToken});
-               
+            res.status(201).json({ message: 'User created successfully', data: savedUser.refresh_tokens, accessToken: accessToken, refreshToken: refreshToken });
+
         } catch (e) {
             console.error(e);
             res.status(500).json({ message: 'Internal server error while creating user' });
@@ -64,16 +65,16 @@ router.post('/login', async (req, res) => {
         return res.status(400).json({ message: 'Empty credentials supplied' });
     } else {
         try {
-            const user =  await User.findOne({ national_id_number });
+            const user = await User.findOne({ national_id_number });
             if (!user) {
                 return res.status(404).json({ message: 'User not found' });
             } else {
                 const match = await bcrypt.compare(password, user.password);
                 if (match) {
-                    const accessToken = jwt.sign({national_id_number}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '10m'});
-                    const refreshToken = jwt.sign({national_id_number}, process.env.REFRESH_TOKEN_SECRET, {expiresIn: '1d'});
+                    const accessToken = jwt.sign({ national_id_number }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '10m' });
+                    const refreshToken = jwt.sign({ national_id_number }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '1d' });
                     user.refresh_tokens.push(refreshToken);
-                    return res.status(200).json({ message: 'Successful login', data: user, accessToken: accessToken, refreshToken: refreshToken});
+                    return res.status(200).json({ message: 'Successful login', data: user, accessToken: accessToken, refreshToken: refreshToken });
                 } else {
                     return res.status(401).json({ message: 'Invalid credentials' });
                 }
@@ -94,6 +95,7 @@ router.delete('/logout', async (req, res) => {
         const user = await User.findOne({ national_id_number });
         if (!user) return res.status(404).json({ message: 'User not found' });
         user.refresh_tokens = user.refresh_tokens.filter(token => token !== refreshToken);
+        await user.save();
         res.status(204).json({ message: 'User logged out successfully' });
     } catch (e) {
         console.error(e);
