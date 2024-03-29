@@ -2,9 +2,7 @@ const jwt = require('jsonwebtoken');
 require ('dotenv').config();
 
 const verifyJWT = (req, res, next) => {
-    const authHeader =  req.headers['Authorization' || 'authorization'];
-    console.log(authHeader)
-    const refreshToken = authHeader && authHeader.split(' ')[1];
+    const refreshToken = req.headers['authorization'];
     console.log(refreshToken)
     if (!refreshToken) return res.status(401).send({message: 'Unauthorized Action'});
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
