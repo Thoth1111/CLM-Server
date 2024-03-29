@@ -75,3 +75,5 @@ router.delete('/license/:license_id', verifyJWT, async (req, res) => {
         res.status(500).json({ message: 'Internal server error while removing license' });
     }
 })
+
+module.exports = router;
