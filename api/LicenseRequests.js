@@ -7,7 +7,7 @@ const User = require('../models/User');
 const { verifyJWT } = require('../middleware/auth');
 
 // Add a new license
-router.post('/new/', verifyJWT, async (req, res) => {
+router.post('/new', verifyJWT, async (req, res) => {
     const { business_id, business_name, kra_pin, activity_code, effective_date, expiry_date, location } = req.body;
     const user = await User.findOne({ national_id_number: req.national_id_number });
     try {
@@ -33,7 +33,7 @@ router.post('/new/', verifyJWT, async (req, res) => {
 })
 
 // Get a user's licenses
-router.get('/my_licenses', verifyJWT, async (req, res) => {
+router.get('/saved', verifyJWT, async (req, res) => {
     const user = await User.findOne({ national_id_number: req.national_id_number });
     try {
         const licenses = await License.find({ user_id: user._id });
@@ -46,7 +46,7 @@ router.get('/my_licenses', verifyJWT, async (req, res) => {
 })
 
 // Get a specific license
-router.get('/license/:license_id', verifyJWT, async (req, res) => {
+router.get('/:license_id', verifyJWT, async (req, res) => {
     const { license_id } = req.params;
     const user = await User.findOne({ national_id_number: req.national_id_number });
     try {
@@ -61,7 +61,7 @@ router.get('/license/:license_id', verifyJWT, async (req, res) => {
 })
 
 // Remove a license
-router.delete('/license/:license_id', verifyJWT, async (req, res) => {
+router.delete('/:license_id', verifyJWT, async (req, res) => {
     const { license_id } = req.params
     const user = await User.findOne({ national_id_number: req.national_id_number });
     try {
