@@ -8,7 +8,6 @@ const User = require('../models/User');
 
 // Password hashing
 const bcrypt = require('bcrypt');
-const { verifyJWT } = require('../middleware/auth');
 
 // Register a new user
 router.post('/register', async (req, res) => {
