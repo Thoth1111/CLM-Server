@@ -89,7 +89,7 @@ router.post('/login', async (req, res) => {
 
 // Logout user
 router.delete('/logout', async (req, res) => {
-    const { refreshToken } = req.body;
+    const { refreshToken } = req.body.national_id_number;
     if (!refreshToken) return res.status(400).json({ message: 'Unable to Logout due to missing Parameters' });
     try {
         jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
