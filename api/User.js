@@ -74,7 +74,7 @@ router.post('/login', async (req, res) => {
                     const accessToken = jwt.sign({ national_id_number }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '10m' });
                     const refreshToken = jwt.sign({ national_id_number }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '1d' });
                     user.refresh_tokens.push(refreshToken);
-                    return res.status(200).json({ message: 'Successful login', data: user, accessToken: accessToken, refreshToken: refreshToken });
+                    return res.status(200).json({ message: 'Successful login', accessToken: accessToken, refreshToken: refreshToken });
                 } else {
                     return res.status(401).json({ message: 'Invalid credentials' });
                 }
