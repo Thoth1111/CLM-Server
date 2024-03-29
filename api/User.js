@@ -8,6 +8,7 @@ const User = require('../models/User');
 
 // Password hashing
 const bcrypt = require('bcrypt');
+const { verifyJWT } = require('../middleware/auth');
 
 // Register a new user
 router.post('/register', async (req, res) => {
@@ -88,20 +89,14 @@ router.post('/login', async (req, res) => {
 })
 
 // Logout user
-router.delete('/logout', async (req, res) => {
-    const { refreshToken } = req.body.national_id_number;
-    console.log(req.body)
-    if (!refreshToken) return res.status(400).json({ message: 'Unable to Logout due to missing Parameters' });
+router.delete('/logout/:national_id_number', async (req, res) => {
+    const { national_id_number } = req.params;
     try {
-        jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
-            if (err) return res.status(403).json({ message: 'Invalid token' });
-            national_id_number = decoded.national_id_number;
-            const user = User.findOne({ national_id_number });        
-            if (!user) return res.status(404).json({ message: 'User not found' });
-            user.refresh_tokens = user.refresh_tokens.filter(token => token !== refreshToken);
-            user.save();
-            res.status(204).json({ message: 'User logged out successfully' });
-        })
+        const user = await User.findOne({ national_id_number });
+        if (!user) return res.status(404).json({ message: 'User not found' });
+        user.refresh_tokens = [];
+        await user.save();
+        res.status(204).json({ message: 'User logged out successfully' });
     } catch (e) {
         console.error(e);
         res.status(500).json({ message: 'Internal server error while logging out user' });
