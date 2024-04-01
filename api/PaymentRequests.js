@@ -5,8 +5,6 @@ require ('dotenv').config();
 const axios = require('axios');
 const { generatePaymentToken } = require('../middleware/stk');
 
-const SafcomUrl = process.env.SAND_BOX_URL;
-
 router.post('/pay', generatePaymentToken, async (req, res) => {
     // const amount = req.body.amount;
     const phoneNumber = req.body.phone_number.substring(1);
@@ -16,7 +14,7 @@ router.post('/pay', generatePaymentToken, async (req, res) => {
     const password = Buffer.from(`${shortCode}${passKey}${timeStamp}`).toString('base64');
     const callBackURL = process.env.CALL_BACK_URL;
 
-    await axios.post(SafcomUrl, 
+    await axios.post('https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest', 
         {  
             "BusinessShortCode": shortCode,   
             "Password": password,    
