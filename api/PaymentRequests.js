@@ -12,19 +12,19 @@ router.post('/pay', generatePaymentToken, async (req, res) => {
     const shortCode = process.env.SHORT_CODE;
     const passKey = process.env.PASS_KEY;
     const password = Buffer.from(`${shortCode}${passKey}${timeStamp}`).toString('base64');
-    const callBackURL = process.env.CALL_BACK_URL;
+    const callBack = process.env.SAFCOM_STK_CALLBACK_URL;
 
-    await axios.post('https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest', 
+    await axios.post('https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest', 
         {  
             "BusinessShortCode": shortCode,   
             "Password": password,    
             "Timestamp":timeStamp,    
             "TransactionType": "CustomerPayBillOnline",    
-            "Amount": "0",    
+            "Amount": "1",    
             "PartyA":`254${phoneNumber}`,    
             "PartyB":shortCode,    
             "PhoneNumber":`254${phoneNumber}`,    
-            "CallBackURL": callBackURL,    
+            "CallBackURL": `https://clm-server.onrender.com/${callBack}`,    
             "AccountReference":"Test",    
             "TransactionDesc":"Test Payment"
         }, 
