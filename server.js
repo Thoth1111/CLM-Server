@@ -40,7 +40,7 @@ app.post(`/${callback}`, (req, res) => {
     console.log(callbackData);
     if(callbackData.body.stkCallback.CallbackMetadata){
         console.log(callbackData.body.stkCallback.CallbackMetadata);
-        return res.status(200).json({ message: 'Payment received', data: callbackData.body.stkCallback.CallbackMetadata });
+        return res.json('Ok');
     }
     return res.json('Ok');
 })
