@@ -34,12 +34,13 @@ app.listen(port, ()=> {
     console.log(`Server started on port ${port}`);
 });
 
-// Listen for stk push callback
+// Listen for Safaricom stk push callback
 app.post(`/${callback}`, (req, res) => {
     const callbackData = req.body;
     console.log(callbackData);
-    if(!callbackData.body.stkCallback.CallbackMetadata){
-        return res.json('Ok');
+    if(callbackData.body.stkCallback.CallbackMetadata){
+        console.log(callbackData.body.stkCallback.CallbackMetadata);
+        return res.status(200).json({ message: 'Payment received', data: callbackData.body.stkCallback.CallbackMetadata });
     }
-    console.log(callbackData.body.stkCallback.CallbackMetadata);
+    return res.json('Ok');
 })
