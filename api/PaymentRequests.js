@@ -10,7 +10,6 @@ const SafcomUrl = process.env.SAND_BOX_URL;
 router.post('/pay', generatePaymentToken, async (req, res) => {
     // const amount = req.body.amount;
     const phoneNumber = req.body.phone_number.substring(1);
-    const paymentToken = req.paymentToken;
     const timeStamp = new Date().toISOString().replace(/[^0-9]/g, "").slice(0, 14);
     const shortCode = process.env.SHORT_CODE;
     const passKey = process.env.PASS_KEY;
