@@ -37,6 +37,10 @@ app.listen(port, ()=> {
 // Listen for Safaricom stk push callback
 app.post(`/${callback}`, (req, res) => {
     const callbackData = req.body;
-    console.log(callbackData);
-    return res.json('Ok');
-})
+    console.log(callbackData.Body);
+    if (callbackData.Body.ResultCode !== 0) {
+        console.log(callbackData.Body)
+        return res.json('Ok');
+    }
+    console.log(callbackData.Body.stkCallback.CallbackMetadata.Item);
+});
