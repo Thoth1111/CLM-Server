@@ -14,7 +14,7 @@ router.post('/pay', generatePaymentToken, async (req, res) => {
     const password = Buffer.from(`${shortCode}${passKey}${timeStamp}`).toString('base64');
     const callBackURL = process.env.CALL_BACK_URL;
 
-    await axios.post('https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest', 
+    await axios.post('https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest', 
         {  
             "BusinessShortCode": shortCode,   
             "Password": password,    
