@@ -15,6 +15,7 @@ router.post('/pay', generatePaymentToken, async (req, res) => {
     const shortCode = process.env.SHORT_CODE;
     const passKey = process.env.PASS_KEY;
     const password = Buffer.from(`${shortCode}${passKey}${timeStamp}`).toString('base64');
+    const callBackURL = process.env.CALL_BACK_URL;
 
     await axios.post(SafcomUrl, 
         {  
@@ -26,7 +27,7 @@ router.post('/pay', generatePaymentToken, async (req, res) => {
             "PartyA":`254${phoneNumber}`,    
             "PartyB":shortCode,    
             "PhoneNumber":`254${phoneNumber}`,    
-            "CallBackURL": "https://mydomain.com/path",    
+            "CallBackURL": callBackURL,    
             "AccountReference":"Test",    
             "TransactionDesc":"Test Payment"
         }, 
