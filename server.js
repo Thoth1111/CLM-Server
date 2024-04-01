@@ -38,9 +38,5 @@ app.listen(port, ()=> {
 app.post(`/${callback}`, (req, res) => {
     const callbackData = req.body;
     console.log(callbackData);
-    if(callbackData.body.stkCallback.CallbackMetadata){
-        console.log(callbackData.body.stkCallback.CallbackMetadata);
-        return res.json('Ok');
-    }
     return res.json('Ok');
 })
