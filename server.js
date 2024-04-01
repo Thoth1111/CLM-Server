@@ -8,6 +8,7 @@ const UserRouter = require('./api/UserRequests');
 const LicenseRouter = require('./api/LicenseRequests');
 const PaymentRouter = require('./api/PaymentRequests');
 const bodyParser = require('body-parser');
+const callback = process.env.SAFCOM_STK_CALLBACK_URL;
 
 const uri = process.env.MONGODB_CONNECTION_STRING;
 app.use(cors());
@@ -29,6 +30,16 @@ async function connect() {
 
 connect().catch(console.error);
 
-app.listen(8000, ()=> {
+app.listen(port, ()=> {
     console.log(`Server started on port ${port}`);
 });
+
+// Listen for stk push callback
+app.post(`/${callback}`, (req, res) => {
+    const callbackData = req.body;
+    console.log(callbackData);
+    if(!callbackData.body.stkCallback.CallbackMetadata){
+        return res.json('Ok');
+    }
+    console.log(callbackData.body.stkCallback.CallbackMetadata);
+})
