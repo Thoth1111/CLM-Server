@@ -5,7 +5,7 @@ const generatePaymentToken = async (req, res, next) => {
     const secret = process.env.SECRET_KEY;
     const consumer = process.env.CONSUMER_KEY;
     const basicAuth = Buffer.from(`${consumer}:${secret}`).toString('base64');
-    axios.get('https://api.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials', {
+    axios.get('https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials', {
         headers: {
             Authorization: `Basic ${basicAuth}`
         }
