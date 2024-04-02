@@ -6,15 +6,11 @@ const PaymentSchema = new Schema({
         type: String,
         required: true,
     },
-    payment_reference: {
+    transaction_id: {
         type: String,
         required: true,
     },
     amount: {
-        type: Number,
-        required: true,
-    },
-    transaction_id: {
         type: String,
         required: true,
     },
@@ -22,18 +18,25 @@ const PaymentSchema = new Schema({
         type: Date,
         required: true,
     },
-    extension_plan: {
+    business_name: {
         type: String,
         required: true,
-        options: ['monthly', 'quarterly', 'bi-annually', 'annually'],
     },
-    license_id: {
+    business_id: {
+        type: String,
+        required: true,
+    },
+    license_ref: {
         type: Schema.Types.ObjectId,
         ref: 'License',
     },
-    user_id: {
+    initiator: {
         type: Schema.Types.ObjectId,
         ref: 'User',
+    },
+    phone_number: {
+        type: String,
+        required: true,
     },
 })
 
