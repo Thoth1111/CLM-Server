@@ -7,6 +7,8 @@ const port  = process.env.PORT || 8000;
 const UserRouter = require('./api/UserRequests');
 const LicenseRouter = require('./api/LicenseRequests');
 const PaymentRouter = require('./api/PaymentRequests');
+// const Payment = require('./models/Payment');
+// const License = require('./models/License');
 const bodyParser = require('body-parser');
 const callback = process.env.SAFCOM_STK_CALLBACK_URL;
 
@@ -36,6 +38,9 @@ app.listen(port, ()=> {
 
 // Listen for Safaricom stk push callback
 app.post(`/${callback}`, (req, res) => {
+    const { license_id, extension } = req.params
+    console.log(`license_id: ${license_id}, extension: ${extension}`);
+    // const license = License.findOne({ _id: license_id });
     const callbackData = req.body;
     console.log(callbackData.Body);
     if (callbackData.Body.ResultCode !== 0) {
@@ -43,4 +48,14 @@ app.post(`/${callback}`, (req, res) => {
         return res.json('Ok');
     }
     console.log(callbackData.Body.stkCallback.CallbackMetadata.Item);
+    // const payment_method = 'M-Pesa';
+    // const transaction_id = callbackData.Body.stkCallback.CallbackMetadata.Item[1].Value;
+    // const amount = callbackData.Body.stkCallback.CallbackMetadata.Item[0].Value;
+    // const transaction_date = callbackData.Body.stkCallback.CallbackMetadata.Item[3].Value;
+    // const phone_number = callbackData.Body.stkCallback.CallbackMetadata.Item[4].Value;
+    // const bunsiness_name = license.business_name;
+    // const business_id = license.business_id;
+    // const license_ref = license._id;
+    // const initiator = license.user_id;
+    
 });
