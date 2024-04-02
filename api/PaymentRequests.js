@@ -4,10 +4,13 @@ const router = express.Router();
 require ('dotenv').config();
 const axios = require('axios');
 const { generatePaymentToken } = require('../middleware/stk');
+const { verifyJWT } = require('../middleware/auth');
 
-router.post('/pay', generatePaymentToken, async (req, res) => {
+router.post('/pay', verifyJWT, generatePaymentToken, async (req, res) => {
     // const amount = req.body.amount;
     const phoneNumber = req.body.phone_number.substring(1);
+    const license_id = req.body.license_id;
+    const extension = req.body.extension;
     const timeStamp = new Date().toISOString().replace(/[^0-9]/g, "").slice(0, 14);
     const shortCode = process.env.SHORT_CODE;
     const passKey = process.env.PASS_KEY;
@@ -24,7 +27,7 @@ router.post('/pay', generatePaymentToken, async (req, res) => {
             "PartyA":`254${phoneNumber}`,    
             "PartyB":shortCode,    
             "PhoneNumber":`254${phoneNumber}`,    
-            "CallBackURL": `https://clm-server.onrender.com/${callBack}`,    
+            "CallBackURL": `${callBack}/license_id=${license_id}&extension=${extension}`,    
             "AccountReference":"Test",    
             "TransactionDesc":"Test Payment"
         }, 
