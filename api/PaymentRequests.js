@@ -8,9 +8,9 @@ const { verifyJWT } = require('../middleware/auth');
 
 router.post('/pay', generatePaymentToken, async (req, res) => {
     // const amount = req.body.amount;
-    const phoneNumber = req.body.phone_number.substring(1);
-    const license_id = req.body.license_id;
-    const extension = req.body.extension;
+    const phone_number = req.body.phone_number.substring(1);
+    // const license_id = req.body.license_id;
+    // const extension = req.body.extension;
     const timeStamp = new Date().toISOString().replace(/[^0-9]/g, "").slice(0, 14);
     const shortCode = process.env.SHORT_CODE;
     const passKey = process.env.PASS_KEY;
@@ -24,10 +24,10 @@ router.post('/pay', generatePaymentToken, async (req, res) => {
             "Timestamp":timeStamp,    
             "TransactionType": "CustomerPayBillOnline",    
             "Amount": "1",    
-            "PartyA":`254${phoneNumber}`,    
+            "PartyA":`254${phone_number}`,    
             "PartyB":shortCode,    
-            "PhoneNumber":`254${phoneNumber}`,    
-            "CallBackURL": `${callBack}/license_id=${license_id}&extension=${extension}`,    
+            "PhoneNumber":`254${phone_number}`,    
+            "CallBackURL": `${callBack}`,    
             "AccountReference":"Test",    
             "TransactionDesc":"Test Payment"
         }, 
