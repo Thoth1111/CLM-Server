@@ -6,7 +6,7 @@ const axios = require('axios');
 const { generatePaymentToken } = require('../middleware/stk');
 const { verifyJWT } = require('../middleware/auth');
 
-router.post('/pay', verifyJWT, generatePaymentToken, async (req, res) => {
+router.post('/pay', generatePaymentToken, async (req, res) => {
     // const amount = req.body.amount;
     const phoneNumber = req.body.phone_number.substring(1);
     const license_id = req.body.license_id;
