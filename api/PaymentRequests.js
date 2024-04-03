@@ -4,7 +4,6 @@ const router = express.Router();
 require ('dotenv').config();
 const axios = require('axios');
 const { generatePaymentToken } = require('../middleware/stk');
-const { verifyJWT } = require('../middleware/auth');
 
 router.post('/pay', generatePaymentToken, async (req, res) => {
     // const amount = req.body.amount;
@@ -27,7 +26,7 @@ router.post('/pay', generatePaymentToken, async (req, res) => {
             "PartyA":`254${phone_number}`,    
             "PartyB":shortCode,    
             "PhoneNumber":`254${phone_number}`,    
-            "CallBackURL": `${callBack}`,    
+            "CallBackURL": callBack,    
             "AccountReference":"Test",    
             "TransactionDesc":"Test Payment"
         }, 
