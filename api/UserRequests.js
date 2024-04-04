@@ -46,7 +46,7 @@ router.post('/register', async (req, res) => {
             const refreshToken = jwt.sign({ national_id_number }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '1d' });
             newUser.refresh_tokens.push(refreshToken);
             const savedUser = await newUser.save()
-            res.status(201).json({ message: 'User created successfully', data: savedUser.national_id_number, accessToken: accessToken, refreshToken: refreshToken });
+            res.status(201).json({ message: 'User created successfully', id_number: savedUser.national_id_number, accessToken: accessToken, refreshToken: refreshToken });
 
         } catch (e) {
             console.error(e);
@@ -75,7 +75,7 @@ router.post('/login', async (req, res) => {
                     const refreshToken = jwt.sign({ national_id_number }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '1d' });
                     user.refresh_tokens.push(refreshToken);
                     await user.save();
-                    return res.status(200).json({ message: 'Successful login', data: user.national_id_number, accessToken: accessToken, refreshToken: refreshToken });
+                    return res.status(200).json({ message: 'Successful login', id_number: user.national_id_number, accessToken: accessToken, refreshToken: refreshToken });
                 } else {
                     return res.status(401).json({ message: 'Invalid credentials' });
                 }
