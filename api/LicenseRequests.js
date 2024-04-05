@@ -37,7 +37,7 @@ router.get('/saved', verifyJWT, async (req, res) => {
     const user = await User.findOne({ national_id_number: req.national_id_number });
     try {
         const licenses = await License.find({ user_id: user._id });
-        res.status(200).json({ message: 'Licenses retrieved successfully', data: licenses });
+        res.status(200).json({ message: 'Licenses retrieved successfully', licenses: licenses });
     }
     catch (e) {
         console.error(e);
@@ -52,7 +52,7 @@ router.get('/:license_id', verifyJWT, async (req, res) => {
     try {
         const license = await License.findOne({ _id: license_id, user_id: user._id });
         if (!license) return res.status(404).json({ message: 'License not found' });
-        res.status(200).json({ message: 'License retrieved successfully', data: license });
+        res.status(200).json({ message: 'License retrieved successfully', license: license });
     }
     catch (e) {
         console.error(e);
