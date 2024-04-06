@@ -24,7 +24,7 @@ router.post('/new', verifyJWT, async (req, res) => {
             location,
         });
         const savedLicense = await newLicense.save();
-        res.status(201).json({ message: 'License added successfully', data: savedLicense });
+        res.status(201).json({ message: 'License added successfully', newLicense: savedLicense });
     }
     catch (e) {
         console.error(e);
