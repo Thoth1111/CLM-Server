@@ -8,7 +8,7 @@ const { verifyJWT } = require('../middleware/auth');
 
 // Add a new license
 router.post('/new', verifyJWT, async (req, res) => {
-    const { business_id, business_name, kra_pin, activity_code, effective_date, expiry_date, location } = req.body;
+    const { business_id, business_name, kra_pin, activity_code, fee, effective_date, expiry_date, location } = req.body;
     const user = await User.findOne({ national_id_number: req.national_id_number });
     try {
         const existingLicense = await License.findOne({ business_id });
@@ -19,6 +19,7 @@ router.post('/new', verifyJWT, async (req, res) => {
             business_id,
             kra_pin,
             activity_code,
+            fee,
             effective_date,
             expiry_date,
             location,
