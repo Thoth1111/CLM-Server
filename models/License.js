@@ -23,6 +23,10 @@ const LicenseSchema = new Schema({
         type: String,
         required: true,
     },
+    fee: {
+        type: Number,
+        required: true,
+    },
     effective_date: {
         type: Date,
         required: true,
