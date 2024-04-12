@@ -9,8 +9,8 @@ const { verifyJWT } = require('../middleware/auth');
 router.post('/saf/pay', verifyJWT, generatePaymentToken, async (req, res) => {
     // const amount = req.body.amount;
     const phone_number = req.body.phone_number.substring(1);
-    // const license_id = req.body.license_id;
-    // const extension = req.body.extension;
+    const license_id = req.body.license_id;
+    const extension_plan = req.body.extension_plan;
     const timeStamp = new Date().toISOString().replace(/[^0-9]/g, "").slice(0, 14);
     const shortCode = process.env.SHORT_CODE;
     const passKey = process.env.PASS_KEY;
@@ -28,8 +28,8 @@ router.post('/saf/pay', verifyJWT, generatePaymentToken, async (req, res) => {
             "PartyB":shortCode,    
             "PhoneNumber":`254${phone_number}`,    
             "CallBackURL": callBack,    
-            "AccountReference":"Test",    
-            "TransactionDesc":"Test Payment"
+            "AccountReference": license_id,    
+            "TransactionDesc": `${extension_plan} license extension`
         }, 
         {
             headers: {
