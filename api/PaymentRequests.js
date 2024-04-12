@@ -15,7 +15,7 @@ router.post('/saf/pay', verifyJWT, generatePaymentToken, async (req, res) => {
     const shortCode = process.env.SHORT_CODE;
     const passKey = process.env.PASS_KEY;
     const password = Buffer.from(`${shortCode}${passKey}${timeStamp}`).toString('base64');
-    const callBack = process.env.SAFCOM_STK_CALLBACK_URL;
+    // const callBack = process.env.SAFCOM_STK_CALLBACK_URL;
 
     await axios.post('https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest', 
         {  
@@ -27,7 +27,7 @@ router.post('/saf/pay', verifyJWT, generatePaymentToken, async (req, res) => {
             "PartyA":`254${phone_number}`,    
             "PartyB":shortCode,    
             "PhoneNumber":`254${phone_number}`,    
-            "CallBackURL": callBack,    
+            "CallBackURL": 'https://clm-server.onrender.com/saf-stk-callback',    
             "AccountReference": license_id,    
             "TransactionDesc": `${extension_plan} license extension`
         }, 
