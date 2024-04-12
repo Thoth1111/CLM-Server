@@ -38,16 +38,13 @@ app.listen(port, ()=> {
 
 // Listen for Safaricom stk push callback
 app.post(callback, (req, res) => {
-    // const { license_id, extension } = req.params
-    // console.log(`license_id: ${license_id}, extension: ${extension}`);
-    // const license = License.findOne({ _id: license_id });
     const callbackData = req.body;
-    console.log(callbackData.Body);
-    if (callbackData.Body.ResultCode !== 0) {
-        console.log(callbackData.Body.ResultDesc);
-    } else {
-    console.log(callbackData.Body.stkCallback.CallbackMetadata.Item[0].Value, callbackData.Body.stkCallback.CallbackMetadata.Item[1].Value, callbackData.Body.stkCallback.CallbackMetadata.Item[3].Value, callbackData.Body.stkCallback.CallbackMetadata.Item[4].Value);
-    }
+    console.log(callbackData);
+    // if (callbackData.Body.ResultCode !== 0) {
+    //     console.log(callbackData.Body.ResultDesc);
+    // } else {
+    // console.log(callbackData.Body.stkCallback.CallbackMetadata.Item[0].Value, callbackData.Body.stkCallback.CallbackMetadata.Item[1].Value, callbackData.Body.stkCallback.CallbackMetadata.Item[3].Value, callbackData.Body.stkCallback.CallbackMetadata.Item[4].Value);
+    // }
     return res.json('Ok');
     // const payment_method = 'M-Pesa';
     // const transaction_id = callbackData.Body.stkCallback.CallbackMetadata.Item[1].Value;
