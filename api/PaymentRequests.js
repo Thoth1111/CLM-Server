@@ -4,8 +4,9 @@ const router = express.Router();
 require ('dotenv').config();
 const axios = require('axios');
 const { generatePaymentToken } = require('../middleware/stk');
+const { verifyJWT } = require('../middleware/auth');
 
-router.post('/saf/pay', generatePaymentToken, async (req, res) => {
+router.post('/saf/pay', verifyJWT, generatePaymentToken, async (req, res) => {
     // const amount = req.body.amount;
     const phone_number = req.body.phone_number.substring(1);
     // const license_id = req.body.license_id;
