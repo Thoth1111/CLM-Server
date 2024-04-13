@@ -16,6 +16,7 @@ router.post('/saf/pay', verifyJWT, generatePaymentToken, async (req, res) => {
     const passKey = process.env.PASS_KEY;
     const password = Buffer.from(`${shortCode}${passKey}${timeStamp}`).toString('base64');
     const callBack = process.env.SAFCOM_STK_CALLBACK_URL;
+    console.log(callBack);
 
     await axios.post('https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest', 
         {  
