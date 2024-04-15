@@ -25,7 +25,6 @@ router.post('/saf/pay', verifyJWT, generatePaymentToken, async (req, res) => {
     // -------------------------For demo purposes-----------------------
     const reqAmount = req.body.amount;
     const business_name = req.body.business_name;
-    const business_id = req.body.business_id;    
     // ----------------------------------------------------------------
     const national_id_number = req.national_id_number;
     const phone_number = req.body.phone_number.substring(1);
