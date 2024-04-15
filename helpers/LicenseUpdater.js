@@ -1,7 +1,8 @@
 const updateLicense = async (license, extensionPlan) => {
-    const oldExpiryDate = new Date(license.expiry_date);
+    let oldExpiryDate = new Date(license.expiry_date);
     if (oldExpiryDate < new Date()) {
         license.effective_date = new Date(oldExpiryDate.getTime() + 86400000);
+        oldExpiryDate = new Date(license.effective_date);
     }    
     switch (extensionPlan) {
         case '1 year':
