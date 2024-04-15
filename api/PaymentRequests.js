@@ -65,7 +65,6 @@ router.post('/saf/pay', verifyJWT, generatePaymentToken, async (req, res) => {
             amount: reqAmount,
             transaction_date: new Date(),
             business_name: business_name,
-            business_id: business_id,
             license_ref: license_id,
             initiator: user._id,
             phone_number: phone_number,
