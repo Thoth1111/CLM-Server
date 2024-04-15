@@ -6,6 +6,10 @@ const LicenseSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User',
     },
+    qr_code_id: {
+        type: String,
+        required: true,
+    },
     business_name: {
         type: String,
         required: true,
