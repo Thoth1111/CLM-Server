@@ -3,7 +3,9 @@ const License = require('../models/License');
 const updateLicense = async (license_id, extensionPlan) => {
     const license = await License.findOne({ _id: license_id });
     if (!license) return { message: 'License not found' };
-    if (license.expiry_date < new Date()) license.effective_date = license.expiry_date + 1;
+    if (license.expiry_date < new Date()) {
+        license.effective_date = new Date(license.expiry_date.getTime() + 86400000);
+    }
     switch (extensionPlan) {
         case '1 year':
             license.expiry_date.setFullYear(license.expiry_date.getFullYear() + 1);
