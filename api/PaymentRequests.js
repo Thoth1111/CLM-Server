@@ -79,7 +79,7 @@ router.post('/saf/pay', verifyJWT, generatePaymentToken, async (req, res) => {
                 });
                 receiptDetails.save();
                 updateLicense(license, extension_plan);
-                res.status(200).json({ message: 'Payment request sent successfully', data: updatedlicense });
+                res.status(200).json({ message: 'Payment request sent successfully' });
             })
             .catch((error) => {
                 console.error(error);
