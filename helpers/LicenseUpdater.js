@@ -4,13 +4,13 @@ const updateLicense = async (license, extensionPlan) => {
     }
     switch (extensionPlan) {
         case '1 year':
-            license.expiry_date = new Date.setDate(new Date(license.expiry_date).getFullYear() + 1);
+            license.expiry_date = new Date(license.expiry_date).getFullYear() + 1;
             break;
         case '6 months':
-            license.expiry_date = new Date.setDate(new Date(license.expiry_date).getMonth() + 6);
+            license.expiry_date = new Date(license.expiry_date).getMonth() + 6;
             break;
         case '3 months':
-            license.expiry_date = new Date.setDate(new Date(license.expiry_date).getMonth() + 3);
+            license.expiry_date = new Date(license.expiry_date).getMonth() + 3;
             break;
         default:
             break;
