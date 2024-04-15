@@ -1,22 +1,24 @@
 const updateLicense = async (license, extensionPlan) => {
-    if (license.expiry_date < new Date()) {
-      license.effective_date = new Date(license.expiry_date.getTime() + 86400000);
-    }
+    const oldExpiryDate = new Date(license.expiry_date);
+    if (oldExpiryDate < new Date()) {
+      oldExpiryDate.setDate(oldExpiryDate.getDate() + 1);
+      license.effective_date = oldExpiryDate;
+    }    
     switch (extensionPlan) {
         case '1 year':
-            license.expiry_date = new Date(license.expiry_date).getFullYear() + 1;
+            oldExpiryDate.setFullYear(oldExpiryDate.getFullYear() + 1);
             break;
         case '6 months':
-            license.expiry_date = new Date(license.expiry_date).getMonth() + 6;
+            oldExpiryDate.setMonth(oldExpiryDate.getMonth() + 6);
             break;
         case '3 months':
-            license.expiry_date = new Date(license.expiry_date).getMonth() + 3;
+            oldExpiryDate.setMonth(oldExpiryDate.getMonth() + 3);
             break;
         default:
             break;
     }
+    license.expiry_date = oldExpiryDate;
     const updatedLicense = await license.save();
-    console.log(updatedLicense);
     return updatedLicense;
 }
 
