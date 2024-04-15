@@ -14,6 +14,14 @@ const qrGenerate = (qrID, business_name, expiry_date, constituency, ward, plot_n
         floor,
         stall_number,
     });
+    const pathDirectory = 'public/clm_qr_codes';
+    if (!fs.existsSync(pathDirectory)) {
+        fs.mkdirSync(pathDirectory, { recursive: true }, (err) => {
+            if (err) {
+                console.error(`qr_code_directory_creation_error: ${err}`);
+            }
+        });
+    }
     qr.toFile(`public/clm_qr_codes/${business_name}.png`, qrData, { errorCorrectionLevel: 'H' 
     }, (err) => {
         if (err){
