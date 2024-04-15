@@ -38,6 +38,10 @@ const PaymentSchema = new Schema({
         type: String,
         required: true,
     },
+    extension: {
+        type: String,
+        required: true,
+    }
 })
 
 const Payment = mongoose.model('Payment', PaymentSchema);
