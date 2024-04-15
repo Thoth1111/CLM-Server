@@ -5,7 +5,7 @@ export const updateLicense = async (license_id, extensionPlan) => {
     if (!license) return { message: 'License not found' };
     if (license.expiry_date < new Date()) license.effective_date = license.expiry_date + 1;
     switch (extensionPlan) {
-        case '12 months':
+        case '1 year':
             license.expiry_date.setFullYear(license.expiry_date.getFullYear() + 1);
             break;
         case '6 months':
