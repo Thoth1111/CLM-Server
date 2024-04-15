@@ -1,5 +1,5 @@
 const { v4: uuidv4 } = require('uuid');
-import { qrGenerate, deleteQRImage } from './qrGenerator';
+const { qrGenerate, deleteQRImage } = require('./qrGenerator');
 
 const updateLicense = async (license, extensionPlan) => {
     const qrID = uuidv4();
