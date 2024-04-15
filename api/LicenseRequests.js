@@ -1,13 +1,16 @@
 const express = require('express');
 const router = express.Router();
+const { v4: uuidv4 } = require('uuid');
 
 // Load License model
 const License = require('../models/License');
 const User = require('../models/User');
 const { verifyJWT } = require('../middleware/auth');
+const { qrGenerate } = require('../helpers/qrGenerator');
 
 // Add a new license
 router.post('/new', verifyJWT, async (req, res) => {
+    const qr_code_id = uuidv4();
     const { business_id, business_name, kra_pin, activity_code, fee, effective_date, expiry_date, location } = req.body;
     const user = await User.findOne({ national_id_number: req.national_id_number });
     try {
@@ -15,6 +18,7 @@ router.post('/new', verifyJWT, async (req, res) => {
         if (existingLicense) return res.status(400).json({ message: 'License already exists in your manager' });
         const newLicense = new License({
             user_id: user._id,
+            qr_code_id,
             business_name,
             business_id,
             kra_pin,
@@ -24,6 +28,18 @@ router.post('/new', verifyJWT, async (req, res) => {
             expiry_date,
             location,
         });
+        qrGenerate(
+            qr_code_id, 
+            business_name, 
+            expiry_date, 
+            location.constituency, 
+            location.ward, 
+            location.plot_number, 
+            location.road_street, 
+            location.building, 
+            location.floor, 
+            location.stall_number
+        );
         const savedLicense = await newLicense.save();
         res.status(201).json({ message: 'License added successfully', newLicense: savedLicense });
     }
@@ -37,7 +53,7 @@ router.post('/new', verifyJWT, async (req, res) => {
 router.get('/saved', verifyJWT, async (req, res) => {
     const user = await User.findOne({ national_id_number: req.national_id_number });
     try {
-        const licenses = await License.find({ user_id: user._id });
+        const licenses = await License.find({ user_id: user._id }, {qr_code_id: 0});
         res.status(200).json({ message: 'Licenses retrieved successfully', licenses: licenses });
     }
     catch (e) {
@@ -51,7 +67,7 @@ router.get('/:license_id', verifyJWT, async (req, res) => {
     const { license_id } = req.params;
     const user = await User.findOne({ national_id_number: req.national_id_number });
     try {
-        const license = await License.findOne({ _id: license_id, user_id: user._id });
+        const license = await License.findOne({ _id: license_id, user_id: user._id }, {qr_code_id: 0});
         if (!license) return res.status(404).json({ message: 'License not found' });
         res.status(200).json({ message: 'License retrieved successfully', license: license });
     }
