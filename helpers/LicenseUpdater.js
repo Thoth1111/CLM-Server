@@ -1,4 +1,7 @@
-const updateLicense = async (license, extensionPlan) => {
+const License = require('../models/License');
+
+const updateLicense = async (license_id, extensionPlan) => {
+    const license = await License.findOne({ _id: license_id });
     if (license.expiry_date < new Date()) {
       license.effective_date = new Date(license.expiry_date.getTime() + 86400000);
     }
