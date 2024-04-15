@@ -1,6 +1,6 @@
 const License = require('../models/License');
 
-export const updateLicense = async (license_id, extensionPlan) => {
+const updateLicense = async (license_id, extensionPlan) => {
     const license = await License.findOne({ _id: license_id });
     if (!license) return { message: 'License not found' };
     if (license.expiry_date < new Date()) license.effective_date = license.expiry_date + 1;
@@ -19,3 +19,5 @@ export const updateLicense = async (license_id, extensionPlan) => {
     }
     await license.save();
 }
+
+module.exports = { updateLicense };
