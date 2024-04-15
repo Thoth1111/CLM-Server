@@ -1,10 +1,10 @@
-const express = require ('express');
+const express = require('express');
 const router = express.Router();
 
 // -------------------------For demo purposes-----------------------
 const crypto = require('crypto');
 const generateTransactionID = () => {
-    const buffer = crypto.randomBytes(Math.ceil(10 * 3/4))
+    const buffer = crypto.randomBytes(Math.ceil(10 * 3 / 4))
     const base64String = buffer.toString('base64')
     const alphanumericString = base64String.replace(/[^A-Z0-9]/g, '')
     const firstTwoLetters = alphanumericString.slice(0, 2).toUpperCase()
@@ -14,8 +14,9 @@ const generateTransactionID = () => {
 // --------------------------------------------------------------------
 
 const Payment = require('../models/Payment');
+const License = require('../models/License');
 const User = require('../models/User');
-require ('dotenv').config();
+require('dotenv').config();
 const axios = require('axios');
 const { generatePaymentToken } = require('../middleware/stk');
 const { verifyJWT } = require('../middleware/auth');
@@ -36,48 +37,55 @@ router.post('/saf/pay', verifyJWT, generatePaymentToken, async (req, res) => {
     const password = Buffer.from(`${shortCode}${passKey}${timeStamp}`).toString('base64');
     const callBack = process.env.SAFCOM_STK_CALLBACK_URL;
 
-    await axios.post('https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest', 
-        {  
-            "BusinessShortCode": shortCode,   
-            "Password": password,    
-            "Timestamp":timeStamp,    
-            "TransactionType": "CustomerPayBillOnline",    
-            "Amount": "1",    
-            "PartyA":`254${phone_number}`,    
-            "PartyB":shortCode,    
-            "PhoneNumber":`254${phone_number}`,    
-            "CallBackURL": callBack,    
-            "AccountReference": license_id,    
-            "TransactionDesc": `${extension_plan} license extension`
-        }, 
-        {
-            headers: {
-                Authorization: `Bearer ${paymentToken}`,
+    const license = await License.findOne({ _id: license_id });
+    if (!license) {
+        return res.status(404).json({ message: 'License not found' });
+    }
+    else {
+        await axios.post('https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest',
+            {
+                "BusinessShortCode": shortCode,
+                "Password": password,
+                "Timestamp": timeStamp,
+                "TransactionType": "CustomerPayBillOnline",
+                "Amount": "1",
+                "PartyA": `254${phone_number}`,
+                "PartyB": shortCode,
+                "PhoneNumber": `254${phone_number}`,
+                "CallBackURL": callBack,
+                "AccountReference": license_id,
+                "TransactionDesc": `${extension_plan} license extension`
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${paymentToken}`,
+                }
             }
-        }
-    )
-    .then((response) => {
-        console.log(response.data);
-        const user = User.findOne({ national_id_number: national_id_number });
-        const receiptDetails = new Payment({
-            payment_method: 'M-Pesa',
-            transaction_id: generateTransactionID(),
-            amount: reqAmount,
-            transaction_date: new Date(),
-            business_name: business_name,
-            license_ref: license_id,
-            initiator: user._id,
-            phone_number: phone_number,
-            extension: extension_plan,
-        });
-        receiptDetails.save();
-        const updatedlicense = updateLicense(license_id, extension_plan);
-        res.status(200).json({ message: 'Payment request sent successfully', data: updatedlicense });
-    })
-    .catch((error) => {
-        console.error(error);
-        res.status(400).json(err.message);
-    });
+        )
+            .then((response) => {
+                console.log(response.data);
+                const user = User.findOne({ national_id_number: national_id_number });
+
+                const receiptDetails = new Payment({
+                    payment_method: 'M-Pesa',
+                    transaction_id: generateTransactionID(),
+                    amount: reqAmount,
+                    transaction_date: new Date(),
+                    business_name: business_name,
+                    license_ref: license_id,
+                    initiator: user._id,
+                    phone_number: phone_number,
+                    extension: extension_plan,
+                });
+                receiptDetails.save();
+                updateLicense(license, extension_plan);
+                res.status(200).json({ message: 'Payment request sent successfully', data: updatedlicense });
+            })
+            .catch((error) => {
+                console.error(error);
+                res.status(400).json(err.message);
+            });
+    }
 })
-         
+
 module.exports = router;
