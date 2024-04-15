@@ -22,10 +22,6 @@ const PaymentSchema = new Schema({
         type: String,
         required: true,
     },
-    business_id: {
-        type: String,
-        required: true,
-    },
     license_ref: {
         type: Schema.Types.ObjectId,
         ref: 'License',
