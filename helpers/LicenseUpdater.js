@@ -1,35 +1,32 @@
 const { v4: uuidv4 } = require('uuid');
-const { qrGenerate, deleteQRImage } = require('./qrGenerator');
+const { qrGenerate } = require('./qrGenerator');
 
 const updateLicense = async (license, extensionPlan) => {
     const qrID = uuidv4();
-    if (license.qr_code_id) {
-        deleteQRImage(license.qr_code_id);
-    }
     license.qr_code_id = qrID;
-    let oldExpiryDate = new Date(license.expiry_date);
-    if (oldExpiryDate < new Date()) {
-        license.effective_date = new Date(oldExpiryDate.getTime() + 86400000);
-        oldExpiryDate = new Date(license.effective_date);
+    let expiryDate = new Date(license.expiry_date);
+    if (expiryDate < new Date()) {
+        license.effective_date = new Date(expiryDate.getTime() + 86400000);
+        expiryDate = new Date(license.effective_date);
     }    
     switch (extensionPlan) {
         case '1 year':
-            oldExpiryDate.setFullYear(oldExpiryDate.getFullYear() + 1);
+            expiryDate.setFullYear(expiryDate.getFullYear() + 1);
             break;
         case '6 months':
-            oldExpiryDate.setMonth(oldExpiryDate.getMonth() + 6);
+            expiryDate.setMonth(expiryDate.getMonth() + 6);
             break;
         case '3 months':
-            oldExpiryDate.setMonth(oldExpiryDate.getMonth() + 3);
+            expiryDate.setMonth(expiryDate.getMonth() + 3);
             break;
         default:
             break;
     }
-    license.expiry_date = oldExpiryDate;
-    qrGenerate(
+    license.expiry_date = expiryDate;
+    const qr_code_buffer = qrGenerate(
         qrID, 
         license.business_name, 
-        oldExpiryDate, 
+        expiryDate, 
         license.location.constituency, 
         license.location.ward, 
         license.location.plot_number, 
@@ -38,6 +35,7 @@ const updateLicense = async (license, extensionPlan) => {
         license.location.floor, 
         license.location.stall_number
     )
+    license.qr_code_buffer = qr_code_buffer;
     const updatedLicense = await license.save();
     return updatedLicense;
 }
