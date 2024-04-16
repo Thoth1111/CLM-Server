@@ -15,7 +15,7 @@ router.post('/new', verifyJWT, async (req, res) => {
     const user = await User.findOne({ national_id_number: req.national_id_number });
     try {
         const existingLicense = await License.findOne({ business_id });
-        if (existingLicense) return res.status(400).json({ message: 'License already exists in your manager' });
+        if (existingLicense) return res.status(400).json({ message: 'License already saved' });
         const newLicense = new License({
             user_id: user._id,
             qr_code_id,
@@ -28,7 +28,7 @@ router.post('/new', verifyJWT, async (req, res) => {
             expiry_date,
             location,
         });
-        qrGenerate(
+        const qr_code_buffer = qrGenerate(
             qr_code_id, 
             business_name, 
             expiry_date, 
@@ -40,6 +40,7 @@ router.post('/new', verifyJWT, async (req, res) => {
             location.floor, 
             location.stall_number
         );
+        newLicense.qr_code_buffer = qr_code_buffer;
         const savedLicense = await newLicense.save();
         res.status(201).json({ message: 'License added successfully', newLicense: savedLicense });
     }
