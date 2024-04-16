@@ -36,8 +36,7 @@ const updateLicense = async (license, extensionPlan) => {
         license.location.stall_number
     )
     license.qr_code_buffer = qr_code_buffer;
-    const updatedLicense = await license.save();
-    return updatedLicense;
+    await license.save();
 }
 
 module.exports = { updateLicense };
