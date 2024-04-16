@@ -14,7 +14,7 @@ const qrGenerate = (qrID, business_name, expiry_date, constituency, ward, plot_n
         floor,
         stall_number,
     });
-    const pathDirectory = 'public/clm_qr_codes';
+    const pathDirectory = 'public/qrCodes';
     if (!fs.existsSync(pathDirectory)) {
         fs.mkdirSync(pathDirectory, { recursive: true }, (err) => {
             if (err) {
@@ -22,7 +22,7 @@ const qrGenerate = (qrID, business_name, expiry_date, constituency, ward, plot_n
             }
         });
     }
-    qr.toFile(`public/clm_qr_codes/${business_name}.png`, qrData, { errorCorrectionLevel: 'H' 
+    qr.toFile(`public/qrCodes/${business_name}.png`, qrData, { errorCorrectionLevel: 'H' 
     }, (err) => {
         if (err){
             console.error(`qr_code_generator_error: ${err}`);
@@ -33,8 +33,8 @@ const qrGenerate = (qrID, business_name, expiry_date, constituency, ward, plot_n
 }
 
 const deleteQRImage = (business_name) => {
-    if (fs.existsSync(`public/clm_qr_codes/${business_name}.png`)) {
-        fs.unlink(`public/clm_qr_codes/${business_name}.png`, (err) => {
+    if (fs.existsSync(`public/qrCodes/${business_name}.png`)) {
+        fs.unlink(`public/qrCodes/${business_name}.png`, (err) => {
             if (err) {
                 console.error(`qr_code_deletion_error: ${err}`);
             }
