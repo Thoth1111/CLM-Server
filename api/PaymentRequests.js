@@ -27,7 +27,7 @@ router.get('/receipts', verifyJWT, async (req, res) => {
     const user = await User.findOne({ national_id_number: national_id_number });
     try {
         const payments = await Payment.find({ initiator: user._id });
-        res.status(200).json({ message: 'Payments retrieved successfully', data: payments });
+        res.status(200).json({ message: 'Payments retrieved successfully', payments: payments });
     }
     catch (e) {
         console.error(e);
@@ -91,7 +91,7 @@ router.post('/saf/pay', verifyJWT, generatePaymentToken, async (req, res) => {
                 });
                 newPayment.save();
                 updateLicense(license, extension_plan);
-                res.status(200).json({ message: 'Payment request sent successfully', data: newPayment });
+                res.status(200).json({ message: 'Payment request sent successfully', payment: newPayment });
             })
             .catch((error) => {
                 console.error(error);
