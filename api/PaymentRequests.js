@@ -79,7 +79,7 @@ router.post('/saf/pay', verifyJWT, generatePaymentToken, async (req, res) => {
                 console.log(response.data);
                 const user = User.findOne({ national_id_number: national_id_number });
 
-                const receiptDetails = new Payment({
+                const newPayment = new Payment({
                     payment_method: 'M-Pesa',
                     transaction_id: generateTransactionID(),
                     amount: reqAmount,
@@ -90,9 +90,9 @@ router.post('/saf/pay', verifyJWT, generatePaymentToken, async (req, res) => {
                     phone_number: phone_number,
                     extension: extension_plan,
                 });
-                receiptDetails.save();
-                const newLicense = updateLicense(license, extension_plan);
-                res.status(200).json({ message: 'Payment request sent successfully', data: newLicense });
+                newPayment.save();
+                updateLicense(license, extension_plan);
+                res.status(200).json({ message: 'Payment request sent successfully', data: newPayment });
             })
             .catch((error) => {
                 console.error(error);
