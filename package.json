@@ -17,7 +17,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.5.0",
     "mongoose": "^8.2.3",
-    "qrcode": "^1.5.3",
+    "qr-image": "^3.2.0",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
