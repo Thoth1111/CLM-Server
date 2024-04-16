@@ -9,6 +9,10 @@ const LicenseRouter = require('./api/LicenseRequests');
 const PaymentRouter = require('./api/PaymentRequests');
 const bodyParser = require('body-parser');
 const callback = process.env.SAFCOM_STK_CALLBACK_URL;
+const path = require('path');
+
+// Serve static files from the 'public' directory
+app.use(express.static(path.join(__dirname, 'public/qrCodes')))
 
 const uri = process.env.MONGODB_CONNECTION_STRING;
 app.use(cors());
