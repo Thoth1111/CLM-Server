@@ -22,6 +22,19 @@ const { generatePaymentToken } = require('../middleware/stk');
 const { verifyJWT } = require('../middleware/auth');
 const { updateLicense } = require('../helpers/LicenseUpdater');
 
+router.get('/receipts', verifyJWT, async (req, res) => {
+    const national_id_number = req.national_id_number;
+    const user = await User.findOne({ national_id_number: national_id_number });
+    try {
+        const payments = await Payment.find({ initiator: user._id });
+        res.status(200).json({ message: 'Payments retrieved successfully', data: payments });
+    }
+    catch (e) {
+        console.error(e);
+        res.status(500).json({ message: 'Internal server error while retrieving payments' });
+    }
+})
+
 router.post('/saf/pay', verifyJWT, generatePaymentToken, async (req, res) => {
     // -------------------------For demo purposes-----------------------
     const reqAmount = req.body.amount;
