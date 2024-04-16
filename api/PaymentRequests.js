@@ -50,6 +50,7 @@ router.post('/saf/pay', verifyJWT, generatePaymentToken, async (req, res) => {
     const password = Buffer.from(`${shortCode}${passKey}${timeStamp}`).toString('base64');
     const callBack = process.env.SAFCOM_STK_CALLBACK_URL;
 
+    const user = await User.findOne({ national_id_number: national_id_number });
     const license = await License.findOne({ _id: license_id });
     if (!license) {
         return res.status(404).json({ message: 'License not found' });
@@ -76,9 +77,7 @@ router.post('/saf/pay', verifyJWT, generatePaymentToken, async (req, res) => {
             }
         )
             .then((response) => {
-                console.log(response.data);
-                const user = User.findOne({ national_id_number: national_id_number });
-
+                console.log(response.data);                
                 const newPayment = new Payment({
                     payment_method: 'M-Pesa',
                     transaction_id: generateTransactionID(),
