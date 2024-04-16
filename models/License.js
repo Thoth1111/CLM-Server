@@ -10,6 +10,10 @@ const LicenseSchema = new Schema({
         type: String,
         required: true,
     },
+    qr_code_buffer: {
+        type: Buffer,
+        required: true,
+    },
     business_name: {
         type: String,
         required: true,
