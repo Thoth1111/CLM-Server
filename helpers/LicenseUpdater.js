@@ -2,8 +2,8 @@ const { v4: uuidv4 } = require('uuid');
 const { qrGenerate } = require('./qrGenerator');
 
 const updateLicense = async (license, extensionPlan) => {
-    const qrID = uuidv4();
-    license.qr_code_id = qrID;
+    const qr_code_id = uuidv4();
+    license.qr_code_id = qr_code_id;
     let expiryDate = new Date(license.expiry_date);
     if (expiryDate < new Date()) {
         license.effective_date = new Date(expiryDate.getTime() + 86400000);
@@ -23,18 +23,7 @@ const updateLicense = async (license, extensionPlan) => {
             break;
     }
     license.expiry_date = expiryDate;
-    const qr_code_buffer = qrGenerate(
-        qrID, 
-        license.business_name, 
-        expiryDate, 
-        license.location.constituency, 
-        license.location.ward, 
-        license.location.plot_number, 
-        license.location.road_street, 
-        license.location.building, 
-        license.location.floor, 
-        license.location.stall_number
-    )
+    const qr_code_buffer = qrGenerate(qr_code_id);
     license.qr_code_buffer = qr_code_buffer;
     await license.save();
 }
