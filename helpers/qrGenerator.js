@@ -1,19 +1,8 @@
 const qr = require('qr-image');
 
-const qrGenerate = (qrID, business_name, expiry_date, constituency, ward, plot_number, road_street, building, floor, stall_number) => {
-    const licenseData = JSON.stringify({
-        qrID,
-        business_name,
-        expiry_date,
-        constituency,
-        ward,
-        plot_number,
-        road_street,
-        building,
-        floor,
-        stall_number,
-    });
-    const qr_png_buffer = qr.imageSync(licenseData, { type: 'png', errorCorrectionLevel: 'H', size: 10 });
+const qrGenerate = (qrID) => {
+    const validationCode = JSON.stringify({ qrID });
+    const qr_png_buffer = qr.imageSync(validationCode, { type: 'png', errorCorrectionLevel: 'H', size: 10 });
     // const pathDirectory = 'public/qrCodes';
     // if (!fs.existsSync(pathDirectory)) {
     //     fs.mkdirSync(pathDirectory, { recursive: true }, (err) => {
