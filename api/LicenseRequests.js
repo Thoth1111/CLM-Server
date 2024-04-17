@@ -28,18 +28,7 @@ router.post('/new', verifyJWT, async (req, res) => {
             expiry_date,
             location,
         });
-        const qr_code_buffer = qrGenerate(
-            qr_code_id, 
-            business_name, 
-            expiry_date, 
-            location.constituency, 
-            location.ward, 
-            location.plot_number, 
-            location.road_street, 
-            location.building, 
-            location.floor, 
-            location.stall_number
-        );
+        const qr_code_buffer = qrGenerate(qr_code_id);
         newLicense.qr_code_buffer = qr_code_buffer;
         const savedLicense = await newLicense.save();
         res.status(201).json({ message: 'License added successfully', newLicense: savedLicense });
