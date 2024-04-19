@@ -8,6 +8,16 @@ const License = require('../models/License');
 const User = require('../models/User');
 const { verifyAgentJWT } = require('../middleware/auth');
 
+const getWard = (jurisdiction) => {
+    switch (jurisdiction) {
+        case 'CT47C06W01': return 'Githurai';
+        case 'CT47C06W05': return 'Kahawa';
+        case 'CT47C01W04': return 'Kangemi';
+        case 'CT47C01W05': return 'Mountain View';
+        default: return 'Invalid jurisdiction';
+    }
+}
+
 // Enlist a new agent
 router.post('/enlist', async (req, res) => {
     let { email, national_id_number, agent_id, phone_number, password, jurisdiction } = req.body;
@@ -77,7 +87,7 @@ router.post('/login', async (req, res) => {
                     const refreshToken = jwt.sign({ agent_id }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '1d' });
                     user.refresh_tokens.push(refreshToken);
                     await user.save();
-                    return res.status(200).json({ message: 'Successful login', agent_id: user.agent_id_number, accessToken: accessToken, refreshToken: refreshToken, jurisdiction: user.jurisdiction });
+                    return res.status(200).json({ message: 'Successful login', agent_id: user.agent_id, accessToken: accessToken, refreshToken: refreshToken, jurisdiction: user.jurisdiction });
                 } else {
                     return res.status(401).json({ message: 'Invalid credentials' });
                 }
@@ -107,7 +117,11 @@ router.delete('/logout/:agent_id', async (req, res) => {
 
 // get due and expired licenses by jurisdiction
 router.get('/licenses/:jurisdiction', verifyAgentJWT, async (req, res) => {
-    const ward = req.ward;
+    const { jurisdiction } = req.params;
+    console.log(jurisdiction);
+    const ward = getWard(jurisdiction)
+    console.log(ward);
+    if (ward === 'Invalid jurisdiction') return res.status(400).json({ message: 'Invalid jurisdiction' });
     const today = new Date();
     const oneMonthFromNow = new Date();
     oneMonthFromNow.setMonth(today.getMonth() + 1);
@@ -115,7 +129,7 @@ router.get('/licenses/:jurisdiction', verifyAgentJWT, async (req, res) => {
         const licenses = await License.find({ 'location.ward': ward, $or: [
             //Expiry date is in the past or one month from today
             { expiry_date: { $lt: today} },
-            { expiry_date: { $lt: oneMonthFromNow } }
+            { expiry_date: { $lte: oneMonthFromNow } }
         ]})
         res.status(200).json({ message: 'Licenses retrieved successfully', licenses: licenses });
     }
@@ -128,6 +142,7 @@ router.get('/licenses/:jurisdiction', verifyAgentJWT, async (req, res) => {
 // scan and retrieve a license by QR code
 router.post('/scan', verifyAgentJWT, async (req, res) => {
     const { qr_code_id } = req.body;
+    console.log(qr_code_id)
     try {
         const license = await License.findOne({ qr_code_id});
         if (!license) return res.status(404).json({ message: 'No license found or invalid qr code' });
