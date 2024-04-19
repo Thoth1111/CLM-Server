@@ -14,6 +14,10 @@ const UserSchema = new Schema({
         required: true,
         unique: true,
     },
+    agent_id: {
+        type: String,
+        required: false,
+    },
     phone_number: {
         type: String,
         required: true,
@@ -27,7 +31,12 @@ const UserSchema = new Schema({
     },
     role: {
         type: String,
+        required: true,
         default: 'license_holder',
+    },
+    jurisdiction: {
+        type: String,
+        required: false,
     },
     refresh_tokens: {
         type: [String],
