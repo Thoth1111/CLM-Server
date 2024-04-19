@@ -7,6 +7,7 @@ const port  = process.env.PORT || 10000;
 const UserRouter = require('./api/UserRequests');
 const LicenseRouter = require('./api/LicenseRequests');
 const PaymentRouter = require('./api/PaymentRequests');
+const AgentRouter = require('./api/AgentRequests');
 const bodyParser = require('body-parser');
 const callback = process.env.SAFCOM_STK_CALLBACK_URL;
 const path = require('path');
@@ -21,6 +22,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use('/user', UserRouter);
 app.use('/license', LicenseRouter);
 app.use('/payment', PaymentRouter);
+app.use('/agent', AgentRouter);
 
 async function connect() {
     try {
