@@ -95,6 +95,7 @@ router.post('/saf/pay', verifyJWT, generatePaymentToken, async (req, res) => {
                     initiator: user._id,
                     phone_number: phone_number,
                     extension: extension_plan,
+                    expiry_previous: license.expiry_date,
                 });
                 newPayment.save();
                 updateLicense(license, extension_plan);
@@ -131,6 +132,7 @@ router.post('/bypass/pay', verifyJWT, async (req, res) => {
                 initiator: user._id,
                 phone_number: phone_number,
                 extension: extension_plan,
+                expiry_previous: license.expiry_date,
             });
             await newPayment.save();
             updateLicense(license, extension_plan);
