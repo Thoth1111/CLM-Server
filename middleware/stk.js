@@ -3,7 +3,9 @@ const axios = require('axios');
 
 const generatePaymentToken = async (req, res, next) => {
     const secret = process.env.SECRET_KEY;
+    console.log(`Secret: ${secret}`)
     const consumer = process.env.CONSUMER_KEY;
+    console.log(`Consumer: ${consumer}`)
     const basicAuth = Buffer.from(`${consumer}:${secret}`).toString('base64');
     axios.get('https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials', {
         headers: {
@@ -11,12 +13,12 @@ const generatePaymentToken = async (req, res, next) => {
         }
     })
     .then((res) => {
-        console.log(res.data);
+        console.log(`Payment token: ${res.data.access_token}`);
         paymentToken = res.data.access_token;
         next();
     })
     .catch((err) => {
-        console.error(err);
+        console.error(`Error generating Safcom client credentials: ${err}`);
         res.status(400).json(err.message);
     });
 }
