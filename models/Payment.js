@@ -37,6 +37,10 @@ const PaymentSchema = new Schema({
     extension: {
         type: String,
         required: true,
+    },
+    expiry_previous: {
+        type: Date,
+        required: true,
     }
 })
 
