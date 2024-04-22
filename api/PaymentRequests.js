@@ -116,18 +116,26 @@ router.post('/bypass/pay', verifyJWT, async (req, res) => {
     const extension_plan = req.body.extension_plan;
     try {
         const user = await User.findOne({ national_id_number: national_id_number });
-        const newPayment = new Payment({
-            payment_method: 'M-Pesa',
-            transaction_id: generateTransactionID(),
-            amount: reqAmount,
-            transaction_date: new Date(),
-            business_name: business_name,
-            license_ref: license_id,
-            initiator: user._id,
-            phone_number: phone_number,
-            extension: extension_plan,
-        });
-        await newPayment.save();
+        const license = await License.findOne({ _id: license_id });
+        if (!license || !user) {
+            return res.status(404).json({ message: 'User or License does not exist' });
+        }
+        else {
+            const newPayment = new Payment({
+                payment_method: 'M-Pesa',
+                transaction_id: generateTransactionID(),
+                amount: reqAmount,
+                transaction_date: new Date(),
+                business_name: business_name,
+                license_ref: license_id,
+                initiator: user._id,
+                phone_number: phone_number,
+                extension: extension_plan,
+            });
+            await newPayment.save();
+            updateLicense(license, extension_plan);
+            res.status(200).json({ message: 'Payment saved successfully', payment: newPayment });
+        }
     }
     catch (e) {
         console.error(e);
