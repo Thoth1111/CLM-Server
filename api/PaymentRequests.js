@@ -73,7 +73,7 @@ router.post('/saf/pay', verifyJWT, generatePaymentToken, async (req, res) => {
                 "PartyA": `254${phone_number}`,
                 "PartyB": shortCode,
                 "PhoneNumber": `254${phone_number}`,
-                "CallBackURL": callBack,
+                "CallBackURL": `${callBack}/${license_id}`,
                 "AccountReference": license_id,
                 "TransactionDesc": `${extension_plan} license extension`
             },
