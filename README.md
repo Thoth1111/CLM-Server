@@ -105,6 +105,7 @@ Open API testing tool such as postman and run the various calls from the `test_r
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## 🔭 Future Features <a name="future-features"></a>
+- [] **Complete payment stk-push transactions in production**
 
 
 ## 🤝 Contributing <a name="contributing"></a>
