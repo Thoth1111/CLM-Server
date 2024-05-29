@@ -8,6 +8,7 @@ const License = require('../models/License');
 const User = require('../models/User');
 const { verifyAgentJWT } = require('../middleware/auth');
 
+// Get ward from jurisdiction. Code for testing purposes
 const getWard = (jurisdiction) => {
     switch (jurisdiction) {
         case 'CT47C06W01': return 'Githurai';
@@ -118,9 +119,7 @@ router.delete('/logout/:agent_id', async (req, res) => {
 // get due and expired licenses by jurisdiction
 router.get('/licenses/:jurisdiction', verifyAgentJWT, async (req, res) => {
     const { jurisdiction } = req.params;
-    console.log(jurisdiction);
     const ward = getWard(jurisdiction)
-    console.log(ward);
     if (ward === 'Invalid jurisdiction') return res.status(400).json({ message: 'Invalid jurisdiction' });
     const today = new Date();
     const oneMonthFromNow = new Date();
@@ -142,7 +141,6 @@ router.get('/licenses/:jurisdiction', verifyAgentJWT, async (req, res) => {
 // scan and retrieve a license by QR code
 router.post('/scan', verifyAgentJWT, async (req, res) => {
     const { qr_code_id } = req.body;
-    console.log(qr_code_id)
     try {
         const license = await License.findOne({ qr_code_id});
         if (!license) return res.status(404).json({ message: 'No license found or invalid qr code' });
